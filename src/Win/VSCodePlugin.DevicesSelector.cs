@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Loupedeck. All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
     using System.IO;
 
     /// <summary>
-    /// Plugin: Store Spotify devices locally
+    /// Plugin: Store VSCode devices locally
     /// </summary>
-    public partial class SpotifyPremiumPlugin : Plugin
+    public partial class VSCodePlugin : Plugin
     {
         private readonly String _deviceCacheFileName = "CachedDevice.txt";
 
@@ -53,7 +53,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             }
             catch (Exception ex)
             {
-                Tracer.Warning(ex, "Spotify: error during reading cached deviceID");
+                Tracer.Warning(ex, "VSCode: error during reading cached deviceID");
             }
 
             return String.Empty;

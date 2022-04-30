@@ -1,13 +1,13 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class NextTrackCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public NextTrackCommand()
             : base(
@@ -21,20 +21,20 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SkipPlaybackToNext);
+                this.VSCodePlugin.CheckVSCodeResponse(this.SkipPlaybackToNext);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify NextTrackCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode NextTrackCommand action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
-            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.NextTrack.png");
+            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.NextTrack.png");
             return bitmapImage;
         }
 
-        public ErrorResponse SkipPlaybackToNext() => this.SpotifyPremiumPlugin.Api.SkipPlaybackToNext(this.SpotifyPremiumPlugin.CurrentDeviceId);
+        public ErrorResponse SkipPlaybackToNext() => this.VSCodePlugin.Api.SkipPlaybackToNext(this.VSCodePlugin.CurrentDeviceId);
     }
 }

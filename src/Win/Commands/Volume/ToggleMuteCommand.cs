@@ -1,13 +1,13 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class ToggleMuteCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         private Boolean _mute;
 
@@ -15,7 +15,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             : base(
                   "Toggle Mute",
                   "Toggles audio mute state",
-                  "Spotify Volume")
+                  "VSCode Volume")
         {
         }
 
@@ -23,11 +23,11 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.ToggleMute);
+                this.VSCodePlugin.CheckVSCodeResponse(this.ToggleMute);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify ToggleMuteCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode ToggleMuteCommand action obtain an error: ", e);
             }
         }
 
@@ -35,36 +35,36 @@ namespace Loupedeck.SpotifyPremiumPlugin
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
             return this._mute ?
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Volume.png") :
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.MuteVolume.png");
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.Volume.png") :
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.MuteVolume.png");
         }
 
         public ErrorResponse ToggleMute()
         {
             this.ActionImageChanged();
 
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             return playback?.Device.VolumePercent != 0 ? this.Mute() : this.Unmute();
         }
 
         public ErrorResponse Unmute()
         {
             this._mute = false;
-            var unmuteVolume = this.SpotifyPremiumPlugin.PreviousVolume != 0 ? this.SpotifyPremiumPlugin.PreviousVolume : 50;
-            var result = this.SpotifyPremiumPlugin.Api.SetVolume(unmuteVolume, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var unmuteVolume = this.VSCodePlugin.PreviousVolume != 0 ? this.VSCodePlugin.PreviousVolume : 50;
+            var result = this.VSCodePlugin.Api.SetVolume(unmuteVolume, this.VSCodePlugin.CurrentDeviceId);
             return result;
         }
 
         public ErrorResponse Mute()
         {
             this._mute = true;
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             if (playback?.Device != null)
             {
-                this.SpotifyPremiumPlugin.PreviousVolume = playback.Device.VolumePercent;
+                this.VSCodePlugin.PreviousVolume = playback.Device.VolumePercent;
             }
 
-            var result = this.SpotifyPremiumPlugin.Api.SetVolume(0, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var result = this.VSCodePlugin.Api.SetVolume(0, this.VSCodePlugin.CurrentDeviceId);
 
             return result;
         }

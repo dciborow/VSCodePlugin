@@ -1,19 +1,19 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class MuteCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public MuteCommand()
             : base(
                   "Mute",
                   "Mute description",
-                  "Spotify Volume")
+                  "VSCode Volume")
         {
         }
 
@@ -21,29 +21,29 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.Mute);
+                this.VSCodePlugin.CheckVSCodeResponse(this.Mute);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify MuteCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode MuteCommand action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
-            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.MuteVolume.png");
+            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.MuteVolume.png");
             return bitmapImage;
         }
 
         public ErrorResponse Mute()
         {
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             if (playback?.Device != null)
             {
-                this.SpotifyPremiumPlugin.PreviousVolume = playback.Device.VolumePercent;
+                this.VSCodePlugin.PreviousVolume = playback.Device.VolumePercent;
             }
 
-            var result = this.SpotifyPremiumPlugin.Api.SetVolume(0, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var result = this.VSCodePlugin.Api.SetVolume(0, this.VSCodePlugin.CurrentDeviceId);
 
             return result;
         }

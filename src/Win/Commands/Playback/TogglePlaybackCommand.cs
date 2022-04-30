@@ -1,13 +1,13 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class TogglePlaybackCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         private Boolean _isPlaying = true;
 
@@ -23,31 +23,31 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.TogglePlayback);
+                this.VSCodePlugin.CheckVSCodeResponse(this.TogglePlayback);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify TogglePlayback action obtain an error: ", e);
+                Tracer.Trace($"VSCode TogglePlayback action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
             return this._isPlaying ?
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Play.png") :
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Pause.png");
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.Play.png") :
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.Pause.png");
         }
 
         public ErrorResponse TogglePlayback()
         {
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             this._isPlaying = playback.IsPlaying;
 
             this.ActionImageChanged();
 
             return playback.IsPlaying
-                ? this.SpotifyPremiumPlugin.Api.PausePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId)
-                : this.SpotifyPremiumPlugin.Api.ResumePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId, String.Empty, null, String.Empty, 0);
+                ? this.VSCodePlugin.Api.PausePlayback(this.VSCodePlugin.CurrentDeviceId)
+                : this.VSCodePlugin.Api.ResumePlayback(this.VSCodePlugin.CurrentDeviceId, String.Empty, null, String.Empty, 0);
         }
     }
 }

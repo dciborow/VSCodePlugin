@@ -1,13 +1,13 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
+namespace Loupedeck.VSCodePlugin.ParameterizedCommands
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class DirectVolumeCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public DirectVolumeCommand()
             : base()
@@ -23,11 +23,11 @@ namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SetVolume, actionParameter);
+                this.VSCodePlugin.CheckVSCodeResponse(this.SetVolume, actionParameter);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify DirectVolumeCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode DirectVolumeCommand action obtain an error: ", e);
             }
         }
 
@@ -49,7 +49,7 @@ namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
                 percents = 0;
             }
 
-            var response = this.SpotifyPremiumPlugin.Api.SetVolume(percents, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var response = this.VSCodePlugin.Api.SetVolume(percents, this.VSCodePlugin.CurrentDeviceId);
             return response;
         }
     }

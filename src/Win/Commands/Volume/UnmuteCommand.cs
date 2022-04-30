@@ -1,19 +1,19 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class UnmuteCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public UnmuteCommand()
             : base(
                   "Unmute",
                   "Unmute description",
-                  "Spotify Volume")
+                  "VSCode Volume")
         {
         }
 
@@ -21,25 +21,25 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.Unmute);
+                this.VSCodePlugin.CheckVSCodeResponse(this.Unmute);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify UnmuteCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode UnmuteCommand action obtain an error: ", e);
             }
         }
 
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
-            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Volume.png");
+            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.Volume.png");
             return bitmapImage;
         }
 
         public ErrorResponse Unmute()
         {
-            var unmuteVolume = this.SpotifyPremiumPlugin.PreviousVolume != 0 ? this.SpotifyPremiumPlugin.PreviousVolume : 50;
-            var result = this.SpotifyPremiumPlugin.Api.SetVolume(unmuteVolume, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var unmuteVolume = this.VSCodePlugin.PreviousVolume != 0 ? this.VSCodePlugin.PreviousVolume : 50;
+            var result = this.VSCodePlugin.Api.SetVolume(unmuteVolume, this.VSCodePlugin.CurrentDeviceId);
             return result;
         }
     }

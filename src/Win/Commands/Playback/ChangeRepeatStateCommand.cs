@@ -1,14 +1,14 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Enums;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Enums;
+    using VSCodeAPI.Web.Models;
 
     internal class ChangeRepeatStateCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         private RepeatState _repeatState;
 
@@ -24,33 +24,33 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+                var playback = this.VSCodePlugin.Api.GetPlayback();
                 switch (playback.RepeatState)
                 {
                     case RepeatState.Off:
                         this._repeatState = RepeatState.Context;
-                        this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.ChangeRepeatState, this._repeatState);
+                        this.VSCodePlugin.CheckVSCodeResponse(this.ChangeRepeatState, this._repeatState);
                         break;
 
                     case RepeatState.Context:
                         this._repeatState = RepeatState.Track;
-                        this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.ChangeRepeatState, this._repeatState);
+                        this.VSCodePlugin.CheckVSCodeResponse(this.ChangeRepeatState, this._repeatState);
                         break;
 
                     case RepeatState.Track:
                         this._repeatState = RepeatState.Off;
-                        this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.ChangeRepeatState, this._repeatState);
+                        this.VSCodePlugin.CheckVSCodeResponse(this.ChangeRepeatState, this._repeatState);
                         break;
 
                     default:
                         // Set plugin status and message
-                        this.SpotifyPremiumPlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "Not able to change repeat state (check device etc.)");
+                        this.VSCodePlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "Not able to change repeat state (check device etc.)");
                         break;
                 }
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify ChangeRepeatStateCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode ChangeRepeatStateCommand action obtain an error: ", e);
             }
         }
 
@@ -60,20 +60,20 @@ namespace Loupedeck.SpotifyPremiumPlugin
             switch (this._repeatState)
             {
                 case RepeatState.Off:
-                    icon = "Loupedeck.SpotifyPremiumPlugin.Icons.Width80.RepeatOff.png";
+                    icon = "Loupedeck.VSCodePlugin.Icons.Width80.RepeatOff.png";
                     break;
 
                 case RepeatState.Context:
-                    icon = "Loupedeck.SpotifyPremiumPlugin.Icons.Width80.RepeatList.png";
+                    icon = "Loupedeck.VSCodePlugin.Icons.Width80.RepeatList.png";
                     break;
 
                 case RepeatState.Track:
-                    icon = "Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Repeat.png";
+                    icon = "Loupedeck.VSCodePlugin.Icons.Width80.Repeat.png";
                     break;
 
                 default:
                     // Set plugin status and message
-                    icon = "Loupedeck.SpotifyPremiumPlugin.Icons.Width80.RepeatOff.png";
+                    icon = "Loupedeck.VSCodePlugin.Icons.Width80.RepeatOff.png";
                     break;
             }
 
@@ -83,7 +83,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
         public ErrorResponse ChangeRepeatState(RepeatState repeatState)
         {
-            var response = this.SpotifyPremiumPlugin.Api.SetRepeatMode(repeatState, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var response = this.VSCodePlugin.Api.SetRepeatMode(repeatState, this.VSCodePlugin.CurrentDeviceId);
 
             this.ActionImageChanged();
 

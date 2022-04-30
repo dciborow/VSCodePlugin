@@ -1,6 +1,6 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
     internal class ToggleLikeCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         private Boolean _isLiked = true;
 
@@ -24,33 +24,33 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+                var playback = this.VSCodePlugin.Api.GetPlayback();
                 var trackId = playback.Item?.Id;
                 if (String.IsNullOrEmpty(trackId))
                 {
                     // Set plugin status and message
-                    this.SpotifyPremiumPlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "No track");
+                    this.VSCodePlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "No track");
                     return;
                 }
 
                 var trackItemId = new List<String> { trackId };
-                var tracksExist = this.SpotifyPremiumPlugin.Api.CheckSavedTracks(trackItemId);
+                var tracksExist = this.VSCodePlugin.Api.CheckSavedTracks(trackItemId);
                 if (tracksExist.List == null && tracksExist.Error != null)
                 {
                     // Set plugin status and message
-                    this.SpotifyPremiumPlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "No track list");
+                    this.VSCodePlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "No track list");
                     return;
                 }
 
                 if (tracksExist.List.Any() && tracksExist.List.FirstOrDefault() == false)
                 {
-                    this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SpotifyPremiumPlugin.Api.SaveTrack, trackId);
+                    this.VSCodePlugin.CheckVSCodeResponse(this.VSCodePlugin.Api.SaveTrack, trackId);
                     this._isLiked = true;
                     this.ActionImageChanged();
                 }
                 else
                 {
-                    this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SpotifyPremiumPlugin.Api.RemoveSavedTracks, trackItemId);
+                    this.VSCodePlugin.CheckVSCodeResponse(this.VSCodePlugin.Api.RemoveSavedTracks, trackItemId);
                     this._isLiked = false;
 
                     this.ActionImageChanged();
@@ -58,15 +58,15 @@ namespace Loupedeck.SpotifyPremiumPlugin
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify Toggle Like action obtain an error: ", e);
+                Tracer.Trace($"VSCode Toggle Like action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
             return this._isLiked ?
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.SongLike.png") :
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.SongDislike.png");
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.SongLike.png") :
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.SongDislike.png");
         }
     }
 }

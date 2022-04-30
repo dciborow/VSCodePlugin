@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Spotify Premium Plugin")]
+[assembly: AssemblyTitle("VSCode Plugin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("LoupeDeck Oy")]
-[assembly: AssemblyProduct("Spotify Premium Plugin for Loupedeck Software")]
+[assembly: AssemblyProduct("VSCode Plugin for Loupedeck Software")]
 [assembly: AssemblyCopyright("Copyright (c) 2021 LoupeDeck Oy. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

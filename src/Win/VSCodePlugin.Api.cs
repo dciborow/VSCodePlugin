@@ -1,6 +1,6 @@
 // Copyright (c) Loupedeck. All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
     using System.Collections.Generic;
@@ -10,14 +10,14 @@ namespace Loupedeck.SpotifyPremiumPlugin
     using System.Text;
     using Loupedeck;
     using Newtonsoft.Json;
-    using SpotifyAPI.Web;
-    using SpotifyAPI.Web.Auth;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web;
+    using VSCodeAPI.Web.Auth;
+    using VSCodeAPI.Web.Models;
 
     /// <summary>
-    /// Plugin Spotify API configuration and authorization
+    /// Plugin VSCode API configuration and authorization
     /// </summary>
-    public partial class SpotifyPremiumPlugin : Plugin
+    public partial class VSCodePlugin : Plugin
     {
         private const String _clientId = "ClientId";
         private const String _clientSecret = "ClientSecret";
@@ -25,24 +25,24 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
         private static Token token = new Token();
         private static AuthorizationCodeAuth auth;
-        private static String spotifyTokenFilePath;
+        private static String VSCodeTokenFilePath;
 
-        private static Dictionary<String, String> _spotifyConfiguration;
+        private static Dictionary<String, String> _VSCodeConfiguration;
 
         private List<Int32> tcpPorts = new List<Int32>();
 
-        internal SpotifyWebAPI Api { get; set; }
+        internal VSCodeWebAPI Api { get; set; }
 
         internal String CurrentDeviceId { get; set; }
 
         internal Int32 PreviousVolume { get; set; }
 
-        public Boolean SpotifyApiConnectionOk()
+        public Boolean VSCodeApiConnectionOk()
         {
             if (this.Api == null)
             {
                 // User not logged in -> Automatically start login
-                this.LoginToSpotify();
+                this.LoginToVSCode();
 
                 // and skip action for now
                 return false;
@@ -57,16 +57,16 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
         private Boolean ReadConfigurationFile()
         {
-            // Get Spotify App configuration from spotify-client.txt file: client id and client secret
-            // Windows path: %LOCALAPPDATA%/Loupedeck/PluginData/SpotifyPremium/spotify-client.txt
-            var spotifyClientConfigurationFile = this.ClientConfigurationFilePath;
-            if (!File.Exists(spotifyClientConfigurationFile))
+            // Get VSCode App configuration from VSCode-client.txt file: client id and client secret
+            // Windows path: %LOCALAPPDATA%/Loupedeck/PluginData/VSCode/VSCode-client.txt
+            var VSCodeClientConfigurationFile = this.ClientConfigurationFilePath;
+            if (!File.Exists(VSCodeClientConfigurationFile))
             {
                 // Check path
-                Directory.CreateDirectory(Path.GetDirectoryName(spotifyClientConfigurationFile));
+                Directory.CreateDirectory(Path.GetDirectoryName(VSCodeClientConfigurationFile));
 
                 // Create the file
-                using (FileStream fs = File.Create(spotifyClientConfigurationFile))
+                using (FileStream fs = File.Create(VSCodeClientConfigurationFile))
                 {
                     var info = new UTF8Encoding(true).GetBytes($"{_clientId}{Environment.NewLine}{_clientSecret}{Environment.NewLine}{_tcpPorts}");
 
@@ -74,26 +74,26 @@ namespace Loupedeck.SpotifyPremiumPlugin
                     fs.Write(info, 0, info.Length);
                 }
 
-                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, $"Spotify configuration is missing. Click More Details below", $"file:/{spotifyClientConfigurationFile}");
+                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, $"VSCode configuration is missing. Click More Details below", $"file:/{VSCodeClientConfigurationFile}");
                 return false;
             }
 
             // Read configuration file, skip # comments, trim key and value
-            _spotifyConfiguration = File.ReadAllLines(spotifyClientConfigurationFile)
+            _VSCodeConfiguration = File.ReadAllLines(VSCodeClientConfigurationFile)
                                                 .Where(x => !x.StartsWith("#"))
                                                 .Select(x => x.Split('='))
                                                 .ToDictionary(x => x[0].Trim(), x => x[1].Trim());
 
-            if (!(_spotifyConfiguration.ContainsKey(_clientId) &&
-                _spotifyConfiguration.ContainsKey(_clientSecret) &&
-                _spotifyConfiguration.ContainsKey(_tcpPorts)))
+            if (!(_VSCodeConfiguration.ContainsKey(_clientId) &&
+                _VSCodeConfiguration.ContainsKey(_clientSecret) &&
+                _VSCodeConfiguration.ContainsKey(_tcpPorts)))
             {
-                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, $"Check Spotify API app 'ClientId' / 'ClientSecret' and 'TcpPorts' in configuration file. Click More Details below", $"file:/{spotifyClientConfigurationFile}");
+                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, $"Check VSCode API app 'ClientId' / 'ClientSecret' and 'TcpPorts' in configuration file. Click More Details below", $"file:/{VSCodeClientConfigurationFile}");
                 return false;
             }
 
             // Check TCP Ports
-            this.tcpPorts = _spotifyConfiguration[_tcpPorts]
+            this.tcpPorts = _VSCodeConfiguration[_tcpPorts]
                 .Split(',')
                 .Select(x => new { valid = Int32.TryParse(x.Trim(), out var val), port = val })
                 .Where(x => x.valid)
@@ -102,14 +102,14 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
             if (this.tcpPorts.Count == 0)
             {
-                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, $"Check 'TcpPorts' values in configuration file. Click More Details below", $"file:/{spotifyClientConfigurationFile}");
+                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, $"Check 'TcpPorts' values in configuration file. Click More Details below", $"file:/{VSCodeClientConfigurationFile}");
                 return false;
             }
 
             return true;
         }
 
-        private void SpotifyConfiguration()
+        private void VSCodeConfiguration()
         {
             if (!this.ReadConfigurationFile())
             {
@@ -118,8 +118,8 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
             // Is there a token available
             token = null;
-            spotifyTokenFilePath = System.IO.Path.Combine(this.GetPluginDataDirectory(), "spotify.json");
-            if (File.Exists(spotifyTokenFilePath))
+            VSCodeTokenFilePath = System.IO.Path.Combine(this.GetPluginDataDirectory(), "VSCode.json");
+            if (File.Exists(VSCodeTokenFilePath))
             {
                 token = this.ReadTokenFromLocalFile();
             }
@@ -128,7 +128,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             if (token != null && DateTime.Now < token.CreateDate.AddSeconds(token.ExpiresIn))
             {
                 // Use the existing token
-                this.Api = new SpotifyWebAPI
+                this.Api = new VSCodeWebAPI
                 {
                     AccessToken = token.AccessToken,
                     TokenType = "Bearer",
@@ -142,14 +142,14 @@ namespace Loupedeck.SpotifyPremiumPlugin
             }
             else
             {
-                // User has to login from Loupedeck application Plugin UI: Login - Login to Spotify. See LoginToSpotifyCommand.cs
-                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Login to Spotify as Premium user", null);
+                // User has to login from Loupedeck application Plugin UI: Login - Login to VSCode. See LoginToVSCodeCommand.cs
+                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Login to VSCode as  user", null);
            }
         }
 
         private Token ReadTokenFromLocalFile()
         {
-            var json = File.ReadAllText(spotifyTokenFilePath);
+            var json = File.ReadAllText(VSCodeTokenFilePath);
             var localToken = JsonConvert.DeserializeObject<Token>(json);
 
             // Decrypt refresh token
@@ -172,7 +172,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             var secret = ProtectedData.Protect(plain, null, DataProtectionScope.CurrentUser);
             newToken.RefreshToken = Convert.ToBase64String(secret);
 
-            File.WriteAllText(spotifyTokenFilePath, JsonConvert.SerializeObject(newToken));
+            File.WriteAllText(VSCodeTokenFilePath, JsonConvert.SerializeObject(newToken));
         }
 
         public void RefreshToken(String refreshToken)
@@ -183,13 +183,13 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
             if (!String.IsNullOrWhiteSpace(newToken.Error))
             {
-                Tracer.Error($"Error happened during refreshing Spotify account token: {newToken.Error}: {newToken.ErrorDescription}");
-                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Failed getting access to Spotify. Login as Premium user", null);
+                Tracer.Error($"Error happened during refreshing VSCode account token: {newToken.Error}: {newToken.ErrorDescription}");
+                this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Failed getting access to VSCode. Login as  user", null);
             }
 
             if (this.Api == null)
             {
-                this.Api = new SpotifyWebAPI
+                this.Api = new VSCodeWebAPI
                 {
                     AccessToken = newToken.AccessToken,
                     TokenType = "Bearer",
@@ -227,7 +227,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
                 }
                 catch (Exception e)
                 {
-                    Tracer.Trace(e, "Spotify playlists obtaining error");
+                    Tracer.Trace(e, "VSCode playlists obtaining error");
                 }
             }
 
@@ -254,7 +254,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             return null;
         }
 
-        public void LoginToSpotify()
+        public void LoginToVSCode()
         {
             auth = this.GetAuthorizationCodeAuth(out var timeout);
 
@@ -273,11 +273,11 @@ namespace Loupedeck.SpotifyPremiumPlugin
                 var previousToken = await auth.ExchangeCode(payload.Code);
                 if (!String.IsNullOrWhiteSpace(previousToken.Error))
                 {
-                    Tracer.Error($"Error happened during adding Spotify account: {previousToken.Error}: {previousToken.ErrorDescription}");
+                    Tracer.Error($"Error happened during adding VSCode account: {previousToken.Error}: {previousToken.ErrorDescription}");
                     return;
                 }
 
-                this.Api = new SpotifyWebAPI
+                this.Api = new VSCodeWebAPI
                 {
                     AccessToken = previousToken.AccessToken,
                     TokenType = previousToken.TokenType,
@@ -289,7 +289,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             }
             catch (Exception ex)
             {
-                Tracer.Error($"Error happened during Spotify authentication: {ex.Message}");
+                Tracer.Error($"Error happened during VSCode authentication: {ex.Message}");
             }
         }
 
@@ -299,31 +299,31 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
             if (!NetworkHelpers.TryGetFreeTcpPort(this.tcpPorts, out var selectedPort))
             {
-                Tracer.Error("No available ports for Spotify!");
+                Tracer.Error("No available ports for VSCode!");
                 return null;
             }
 
             var scopes =
-                SpotifyAPI.Web.Enums.Scope.PlaylistReadPrivate |
-                SpotifyAPI.Web.Enums.Scope.Streaming |
-                SpotifyAPI.Web.Enums.Scope.UserReadCurrentlyPlaying |
-                SpotifyAPI.Web.Enums.Scope.UserReadPlaybackState |
-                SpotifyAPI.Web.Enums.Scope.UserLibraryRead |
-                SpotifyAPI.Web.Enums.Scope.UserLibraryModify |
-                SpotifyAPI.Web.Enums.Scope.UserReadPrivate |
-                SpotifyAPI.Web.Enums.Scope.UserModifyPlaybackState |
-                SpotifyAPI.Web.Enums.Scope.PlaylistReadCollaborative |
-                SpotifyAPI.Web.Enums.Scope.PlaylistModifyPublic |
-                SpotifyAPI.Web.Enums.Scope.PlaylistModifyPrivate |
-                SpotifyAPI.Web.Enums.Scope.PlaylistReadPrivate |
-                SpotifyAPI.Web.Enums.Scope.UserReadEmail;
+                VSCodeAPI.Web.Enums.Scope.PlaylistReadPrivate |
+                VSCodeAPI.Web.Enums.Scope.Streaming |
+                VSCodeAPI.Web.Enums.Scope.UserReadCurrentlyPlaying |
+                VSCodeAPI.Web.Enums.Scope.UserReadPlaybackState |
+                VSCodeAPI.Web.Enums.Scope.UserLibraryRead |
+                VSCodeAPI.Web.Enums.Scope.UserLibraryModify |
+                VSCodeAPI.Web.Enums.Scope.UserReadPrivate |
+                VSCodeAPI.Web.Enums.Scope.UserModifyPlaybackState |
+                VSCodeAPI.Web.Enums.Scope.PlaylistReadCollaborative |
+                VSCodeAPI.Web.Enums.Scope.PlaylistModifyPublic |
+                VSCodeAPI.Web.Enums.Scope.PlaylistModifyPrivate |
+                VSCodeAPI.Web.Enums.Scope.PlaylistReadPrivate |
+                VSCodeAPI.Web.Enums.Scope.UserReadEmail;
 
             return !this.ReadConfigurationFile()
                 ? null
                 : new AuthorizationCodeAuth(
-                    _spotifyConfiguration[_clientId], // Spotify API Client Id
-                    _spotifyConfiguration[_clientSecret], // Spotify API Client Secret
-                    $"http://localhost:{selectedPort}", // selectedPort must correspond to that on the Spotify developers's configuration!
+                    _VSCodeConfiguration[_clientId], // VSCode API Client Id
+                    _VSCodeConfiguration[_clientSecret], // VSCode API Client Secret
+                    $"http://localhost:{selectedPort}", // selectedPort must correspond to that on the VSCode developers's configuration!
                     $"http://localhost:{selectedPort}",
                     scopes);
         }

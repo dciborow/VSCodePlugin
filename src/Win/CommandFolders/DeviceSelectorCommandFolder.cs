@@ -1,21 +1,21 @@
 ﻿// Copyright (c) Loupedeck. All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin.CommandFolders
+namespace Loupedeck.VSCodePlugin.CommandFolders
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     /// <summary>
-    /// Dynamic folder (control center) for Spotify devices. https://developer.loupedeck.com/docs/Actions-taxonomy
+    /// Dynamic folder (control center) for VSCode devices. https://developer.loupedeck.com/docs/Actions-taxonomy
     /// </summary>
     internal class DeviceSelectorCommandFolder : PluginDynamicFolder
     {
         private List<Device> _devices;
 
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public DeviceSelectorCommandFolder()
         {
@@ -26,13 +26,13 @@ namespace Loupedeck.SpotifyPremiumPlugin.CommandFolders
 
         public override BitmapImage GetButtonImage(PluginImageSize imageSize)
         {
-            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Devices.png");
+            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.Devices.png");
             return bitmapImage;
         }
 
         public override IEnumerable<String> GetButtonPressActionNames()
         {
-            this._devices = this.SpotifyPremiumPlugin?.Api?.GetDevices()?.Devices;
+            this._devices = this.VSCodePlugin?.Api?.GetDevices()?.Devices;
             if (this._devices != null && this._devices.Any())
             {
                 this._devices.Add(new Device { Id = "activedevice", Name = "Active Device" });
@@ -58,11 +58,11 @@ namespace Loupedeck.SpotifyPremiumPlugin.CommandFolders
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.TransferPlayback, commandParameter);
+                this.VSCodePlugin.CheckVSCodeResponse(this.TransferPlayback, commandParameter);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify DeviceSelectorCommandFolder action obtain an error: ", e);
+                Tracer.Trace($"VSCode DeviceSelectorCommandFolder action obtain an error: ", e);
             }
         }
 
@@ -73,10 +73,10 @@ namespace Loupedeck.SpotifyPremiumPlugin.CommandFolders
                 commandParameter = String.Empty;
             }
 
-            this.SpotifyPremiumPlugin.CurrentDeviceId = commandParameter;
-            this.SpotifyPremiumPlugin.SaveDeviceToCache(commandParameter);
+            this.VSCodePlugin.CurrentDeviceId = commandParameter;
+            this.VSCodePlugin.SaveDeviceToCache(commandParameter);
 
-            return this.SpotifyPremiumPlugin.Api.TransferPlayback(this.SpotifyPremiumPlugin.CurrentDeviceId, true);
+            return this.VSCodePlugin.Api.TransferPlayback(this.VSCodePlugin.CurrentDeviceId, true);
         }
     }
 }

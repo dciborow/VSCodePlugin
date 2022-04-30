@@ -1,20 +1,20 @@
 // Copyright (c) Loupedeck. All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
     using System.Net;
     using Loupedeck;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     /// <summary>
-    /// Plugin: Check Spotify API responses
+    /// Plugin: Check VSCode API responses
     /// </summary>
-    public partial class SpotifyPremiumPlugin : Plugin
+    public partial class VSCodePlugin : Plugin
     {
-        public void CheckSpotifyResponse<T>(Func<T, ErrorResponse> apiCall, T param)
+        public void CheckVSCodeResponse<T>(Func<T, ErrorResponse> apiCall, T param)
         {
-            if (!this.SpotifyApiConnectionOk())
+            if (!this.VSCodeApiConnectionOk())
             {
                 return;
             }
@@ -24,9 +24,9 @@ namespace Loupedeck.SpotifyPremiumPlugin
             this.CheckStatusCode(response.StatusCode(), response.Error?.Message);
         }
 
-        public void CheckSpotifyResponse(Func<ErrorResponse> apiCall)
+        public void CheckVSCodeResponse(Func<ErrorResponse> apiCall)
         {
-            if (!this.SpotifyApiConnectionOk())
+            if (!this.VSCodeApiConnectionOk())
             {
                 return;
             }
@@ -36,7 +36,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             this.CheckStatusCode(response.StatusCode(), response.Error?.Message);
         }
 
-        internal void CheckStatusCode(HttpStatusCode statusCode, String spotifyApiMessage)
+        internal void CheckStatusCode(HttpStatusCode statusCode, String VSCodeApiMessage)
         {
             switch (statusCode)
             {
@@ -59,18 +59,18 @@ namespace Loupedeck.SpotifyPremiumPlugin
 
                 case HttpStatusCode.Unauthorized:
                     // This should never happen?
-                    this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Login to Spotify", null);
+                    this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Login to VSCode", null);
                     break;
 
                 case HttpStatusCode.NotFound:
-                    // User doesn't have device set or some other Spotify related thing. User action needed.
-                    this.OnPluginStatusChanged(Loupedeck.PluginStatus.Warning, $"Spotify message: {spotifyApiMessage}", null);
+                    // User doesn't have device set or some other VSCode related thing. User action needed.
+                    this.OnPluginStatusChanged(Loupedeck.PluginStatus.Warning, $"VSCode message: {VSCodeApiMessage}", null);
                     break;
 
                 default:
                     if (this.PluginStatus.Status != Loupedeck.PluginStatus.Error)
                     {
-                        this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, spotifyApiMessage, null);
+                        this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, VSCodeApiMessage, null);
                     }
 
                     break;

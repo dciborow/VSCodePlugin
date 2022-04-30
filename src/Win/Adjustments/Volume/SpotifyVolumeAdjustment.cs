@@ -1,24 +1,24 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
     using System.Timers;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
-    internal class SpotifyVolumeAdjustment : PluginDynamicAdjustment
+    internal class VSCodeVolumeAdjustment : PluginDynamicAdjustment
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         private Boolean _volumeBlocked;
 
         private Timer _volumeBlockedTimer;
 
-        public SpotifyVolumeAdjustment()
+        public VSCodeVolumeAdjustment()
             : base(
-                "Spotify Volume",
-                "Spotify Volume description",
-                "Spotify Volume",
+                "VSCode Volume",
+                "VSCode Volume description",
+                "VSCode Volume",
                 true)
         {
         }
@@ -30,15 +30,15 @@ namespace Loupedeck.SpotifyPremiumPlugin
                 var modifiedVolume = 0;
                 if (this._volumeBlocked)
                 {
-                    modifiedVolume = this.SpotifyPremiumPlugin.PreviousVolume + ticks;
+                    modifiedVolume = this.VSCodePlugin.PreviousVolume + ticks;
                 }
                 else
                 {
-                    var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+                    var playback = this.VSCodePlugin.Api.GetPlayback();
                     if (playback?.Device == null)
                     {
                         // Set plugin status and message
-                        this.SpotifyPremiumPlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "Cannot adjust volume, no device");
+                        this.VSCodePlugin.CheckStatusCode(System.Net.HttpStatusCode.NotFound, "Cannot adjust volume, no device");
                         return;
                     }
                     else
@@ -48,12 +48,12 @@ namespace Loupedeck.SpotifyPremiumPlugin
                     }
                 }
 
-                this.SpotifyPremiumPlugin.PreviousVolume = modifiedVolume;
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SetVolume, modifiedVolume);
+                this.VSCodePlugin.PreviousVolume = modifiedVolume;
+                this.VSCodePlugin.CheckVSCodeResponse(this.SetVolume, modifiedVolume);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify SpotifyVolumeAdjustment action obtain an error: ", e);
+                Tracer.Trace($"VSCode VSCodeVolumeAdjustment action obtain an error: ", e);
             }
         }
 
@@ -62,27 +62,27 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.TogglePlayback);
+                this.VSCodePlugin.CheckVSCodeResponse(this.TogglePlayback);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify SpotifyVolumeAdjustment action obtain an error: ", e);
+                Tracer.Trace($"VSCode VSCodeVolumeAdjustment action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
             // Dial strip 50px
-            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width50.Volume.png");
+            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width50.Volume.png");
             return bitmapImage;
         }
 
         public ErrorResponse TogglePlayback()
         {
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             return playback.IsPlaying
-                ? this.SpotifyPremiumPlugin.Api.PausePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId)
-                : this.SpotifyPremiumPlugin.Api.ResumePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId, String.Empty, null, String.Empty, 0);
+                ? this.VSCodePlugin.Api.PausePlayback(this.VSCodePlugin.CurrentDeviceId)
+                : this.VSCodePlugin.Api.ResumePlayback(this.VSCodePlugin.CurrentDeviceId, String.Empty, null, String.Empty, 0);
         }
 
         private void InitVolumeBlockedTimer()
@@ -114,7 +114,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
                 percents = 0;
             }
 
-            var response = this.SpotifyPremiumPlugin.Api.SetVolume(percents, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var response = this.VSCodePlugin.Api.SetVolume(percents, this.VSCodePlugin.CurrentDeviceId);
             return response;
         }
 

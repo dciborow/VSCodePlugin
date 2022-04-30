@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Loupedeck. All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
 
-    public partial class SpotifyPremiumPlugin : Plugin
+    public partial class VSCodePlugin : Plugin
     {
-        public String ClientConfigurationFilePath => System.IO.Path.Combine(this.GetPluginDataDirectory(), "spotify-client.txt");
+        public String ClientConfigurationFilePath => System.IO.Path.Combine(this.GetPluginDataDirectory(), "VSCode-client.txt");
 
         public override Boolean Install()
         {
@@ -25,7 +25,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
             using (var streamWriter = new System.IO.StreamWriter(filePath))
             {
                 // Write data
-                this.Assembly.ExtractFile("spotify-client-template.txt", this.ClientConfigurationFilePath);
+                this.Assembly.ExtractFile("VSCode-client-template.txt", this.ClientConfigurationFilePath);
             }
 
             return true;

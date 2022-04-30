@@ -1,14 +1,14 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
+namespace Loupedeck.VSCodePlugin.ParameterizedCommands
 {
     using System;
     using System.Linq;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class SaveToPlaylistCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public SaveToPlaylistCommand()
             : base()
@@ -24,11 +24,11 @@ namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SaveToPlaylist, actionParameter);
+                this.VSCodePlugin.CheckVSCodeResponse(this.SaveToPlaylist, actionParameter);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify SaveToPlaylistCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode SaveToPlaylistCommand action obtain an error: ", e);
             }
         }
 
@@ -37,17 +37,17 @@ namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
             var idWithUri = true;
             if (idWithUri)
             {
-                playlistId = playlistId.Replace("spotify:playlist:", String.Empty);
+                playlistId = playlistId.Replace("VSCode:playlist:", String.Empty);
             }
 
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             var currentTrackUri = playback.Item.Uri;
-            return this.SpotifyPremiumPlugin.Api.AddPlaylistTrack(playlistId, currentTrackUri);
+            return this.VSCodePlugin.Api.AddPlaylistTrack(playlistId, currentTrackUri);
         }
 
         protected override PluginActionParameter[] GetParameters()
         {
-            var playlists = this.SpotifyPremiumPlugin.GetAllPlaylists();
+            var playlists = this.VSCodePlugin.GetAllPlaylists();
             return playlists?.Items
                         .Select(x => new PluginActionParameter(x.Uri, x.Name, String.Empty))
                         .ToArray();

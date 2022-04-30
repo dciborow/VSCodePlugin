@@ -1,12 +1,12 @@
 // Copyright (c) Loupedeck. All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web;
+    using VSCodeAPI.Web;
     using Loupedeck;
-    using SpotifyAPI.Web.Auth;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Auth;
+    using VSCodeAPI.Web.Models;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -14,14 +14,14 @@ namespace Loupedeck.SpotifyPremiumPlugin
     using System.Net;
     using System.Threading.Tasks;
     using System.Timers;
-    using SpotifyAPI.Web.Enums;
+    using VSCodeAPI.Web.Enums;
 
     /// <summary>
-    /// Plugin Spotify API configuration and authorization
+    /// Plugin VSCode API configuration and authorization
     /// </summary>
-    public partial class SpotifyPremiumPlugin : Plugin
+    public partial class VSCodePlugin : Plugin
     {
-    //    internal SpotifyWebAPI Api { get; set; }
+    //    internal VSCodeWebAPI Api { get; set; }
 
     //    private async Task<PlaybackContext> CurrentPlayback() => await this.Api.GetPlaybackAsync();
 
@@ -68,7 +68,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
     //    {
     //        if (this.Api == null)
     //        {
-    //            this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Login to Spotify", null);
+    //            this.OnPluginStatusChanged(Loupedeck.PluginStatus.Error, "Login to VSCode", null);
     //            return null;
     //        }
 
@@ -104,7 +104,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
     //            case "ToggleMute":
     //                return await this.ToggleMuteAsync();
 
-    //            case "SpotifyVolume":
+    //            case "VSCodeVolume":
     //                // Todo: Updating local model overwrites latest volume changed value and we obtaining jumping of volume level
     //                return await this.AdjustVolumeAsync(diff);
 
@@ -215,7 +215,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
     //            var playback = await this.CurrentPlayback();
     //            if (playback?.Device == null)
     //            {
-    //                Tracer.Trace("Spotify Api cannot adjust volume, this.CurrentPlayback.Device is null!");
+    //                Tracer.Trace("VSCode Api cannot adjust volume, this.CurrentPlayback.Device is null!");
     //                return null;
     //            }
     //            this.InitVolumeBlockedTimer();
@@ -294,7 +294,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
     //    {
     //        if (idWithUri)
     //        {
-    //            playlistId = playlistId.Replace("spotify:playlist:", String.Empty);
+    //            playlistId = playlistId.Replace("VSCode:playlist:", String.Empty);
     //        }
 
     //        var playback = await this.CurrentPlayback();

@@ -1,0 +1,8 @@
+﻿# This is a client configuration for VSCode Service access / VSCode Web API
+# For the instructions on how to obtain the client ID and secret, please see https://developer.VSCode.com/documentation/general/guides/authorization/app-settings/
+# Port(s) must correspond to that on the VSCode Redirect URIs. E.g. Redirect URIs: http://localhost:4500 for below configuration. 
+# This file is stored in %LOCALAPPDATA%\Loupedeck\PluginData\VSCodePlugin in Windows and
+# ~/.local/.... /Loupedeck/PluginData/VSCodePlugin on Mac
+ClientId=1234567890
+ClientSecret=1234567890
+TcpPorts=4500,

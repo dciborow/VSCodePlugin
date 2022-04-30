@@ -1,13 +1,13 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class ShufflePlayCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         private Boolean _shuffleState;
 
@@ -23,26 +23,26 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.ShufflePlay);
+                this.VSCodePlugin.CheckVSCodeResponse(this.ShufflePlay);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify ShufflePlayCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode ShufflePlayCommand action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
             return this._shuffleState ?
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.Shuffle.png") :
-                EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width80.ShuffleOff.png");
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.Shuffle.png") :
+                EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width80.ShuffleOff.png");
         }
 
         public ErrorResponse ShufflePlay()
         {
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             this._shuffleState = !playback.ShuffleState;
-            var response = this.SpotifyPremiumPlugin.Api.SetShuffle(this._shuffleState, this.SpotifyPremiumPlugin.CurrentDeviceId);
+            var response = this.VSCodePlugin.Api.SetShuffle(this._shuffleState, this.VSCodePlugin.CurrentDeviceId);
 
             this.ActionImageChanged();
 

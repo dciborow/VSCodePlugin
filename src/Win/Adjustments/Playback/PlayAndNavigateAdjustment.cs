@@ -1,9 +1,9 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class PlayAndNavigateAdjustment : PluginDynamicAdjustment
     {
@@ -16,7 +16,7 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
         }
 
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         protected override void ApplyAdjustment(String actionParameter, Int32 ticks)
         {
@@ -24,16 +24,16 @@ namespace Loupedeck.SpotifyPremiumPlugin
             {
                 if (ticks > 0)
                 {
-                    this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SkipPlaybackToNext);
+                    this.VSCodePlugin.CheckVSCodeResponse(this.SkipPlaybackToNext);
                 }
                 else
                 {
-                    this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.SkipPlaybackToPrevious);
+                    this.VSCodePlugin.CheckVSCodeResponse(this.SkipPlaybackToPrevious);
                 }
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify ApplyAdjustment action obtain an error: ", e);
+                Tracer.Trace($"VSCode ApplyAdjustment action obtain an error: ", e);
             }
         }
 
@@ -42,31 +42,31 @@ namespace Loupedeck.SpotifyPremiumPlugin
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.TogglePlayback);
+                this.VSCodePlugin.CheckVSCodeResponse(this.TogglePlayback);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify ApplyAdjustment action obtain an error: ", e);
+                Tracer.Trace($"VSCode ApplyAdjustment action obtain an error: ", e);
             }
         }
 
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
             // Dial strip 50px
-            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.SpotifyPremiumPlugin.Icons.Width50.PlayAndNavigateTracks.png");
+            var bitmapImage = EmbeddedResources.ReadImage("Loupedeck.VSCodePlugin.Icons.Width50.PlayAndNavigateTracks.png");
             return bitmapImage;
         }
 
-        public ErrorResponse SkipPlaybackToNext() => this.SpotifyPremiumPlugin.Api.SkipPlaybackToNext(this.SpotifyPremiumPlugin.CurrentDeviceId);
+        public ErrorResponse SkipPlaybackToNext() => this.VSCodePlugin.Api.SkipPlaybackToNext(this.VSCodePlugin.CurrentDeviceId);
 
-        public ErrorResponse SkipPlaybackToPrevious() => this.SpotifyPremiumPlugin.Api.SkipPlaybackToPrevious(this.SpotifyPremiumPlugin.CurrentDeviceId);
+        public ErrorResponse SkipPlaybackToPrevious() => this.VSCodePlugin.Api.SkipPlaybackToPrevious(this.VSCodePlugin.CurrentDeviceId);
 
         public ErrorResponse TogglePlayback()
         {
-            var playback = this.SpotifyPremiumPlugin.Api.GetPlayback();
+            var playback = this.VSCodePlugin.Api.GetPlayback();
             return playback.IsPlaying
-                ? this.SpotifyPremiumPlugin.Api.PausePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId)
-                : this.SpotifyPremiumPlugin.Api.ResumePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId, String.Empty, null, String.Empty, 0);
+                ? this.VSCodePlugin.Api.PausePlayback(this.VSCodePlugin.CurrentDeviceId)
+                : this.VSCodePlugin.Api.ResumePlayback(this.VSCodePlugin.CurrentDeviceId, String.Empty, null, String.Empty, 0);
         }
     }
 }

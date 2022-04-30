@@ -1,14 +1,14 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
+namespace Loupedeck.VSCodePlugin.ParameterizedCommands
 {
     using System;
     using System.Linq;
-    using SpotifyAPI.Web.Models;
+    using VSCodeAPI.Web.Models;
 
     internal class StartPlaylistCommand : PluginDynamicCommand
     {
-        private SpotifyPremiumPlugin SpotifyPremiumPlugin => this.Plugin as SpotifyPremiumPlugin;
+        private VSCodePlugin VSCodePlugin => this.Plugin as VSCodePlugin;
 
         public StartPlaylistCommand()
             : base()
@@ -24,22 +24,22 @@ namespace Loupedeck.SpotifyPremiumPlugin.ParameterizedCommands
         {
             try
             {
-                this.SpotifyPremiumPlugin.CheckSpotifyResponse(this.StartPlaylist, actionParameter);
+                this.VSCodePlugin.CheckVSCodeResponse(this.StartPlaylist, actionParameter);
             }
             catch (Exception e)
             {
-                Tracer.Trace($"Spotify StartPlaylistCommand action obtain an error: ", e);
+                Tracer.Trace($"VSCode StartPlaylistCommand action obtain an error: ", e);
             }
         }
 
         public ErrorResponse StartPlaylist(String contextUri)
         {
-            return this.SpotifyPremiumPlugin.Api.ResumePlayback(this.SpotifyPremiumPlugin.CurrentDeviceId, contextUri, null, String.Empty);
+            return this.VSCodePlugin.Api.ResumePlayback(this.VSCodePlugin.CurrentDeviceId, contextUri, null, String.Empty);
         }
 
         protected override PluginActionParameter[] GetParameters()
         {
-            var playlists = this.SpotifyPremiumPlugin.GetAllPlaylists();
+            var playlists = this.VSCodePlugin.GetAllPlaylists();
             return playlists?.Items
                         .Select(x => new PluginActionParameter(x.Uri, x.Name, String.Empty))
                         .ToArray();

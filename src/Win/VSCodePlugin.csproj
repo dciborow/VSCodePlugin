@@ -7,8 +7,8 @@
     <ProjectGuid>{D7B32254-4248-4A43-B127-706810EFCAFA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Loupedeck.SpotifyPremiumPlugin</RootNamespace>
-    <AssemblyName>SpotifyPremiumPlugin</AssemblyName>
+    <RootNamespace>Loupedeck.VSCodePlugin</RootNamespace>
+    <AssemblyName>VSCodePlugin</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,13 +42,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Loupedeck\Loupedeck2\PluginApi.dll</HintPath>
     </Reference>
-    <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="VSCodeAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Loupedeck\Loupedeck2\SpotifyAPI.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Loupedeck\Loupedeck2\VSCodeAPI.Web.dll</HintPath>
     </Reference>
-    <Reference Include="SpotifyAPI.Web.Auth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="VSCodeAPI.Web.Auth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Loupedeck\Loupedeck2\SpotifyAPI.Web.Auth.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Loupedeck\Loupedeck2\VSCodeAPI.Web.Auth.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,17 +69,17 @@
     <Compile Include="Commands\Playback\PreviousTrackCommand.cs" />
     <Compile Include="Commands\Playback\NextTrackCommand.cs" />
     <Compile Include="Commands\ToggleLikeCommand.cs" />
-    <Compile Include="Adjustments\Volume\SpotifyVolumeAdjustment.cs" />
+    <Compile Include="Adjustments\Volume\VSCodeVolumeAdjustment.cs" />
     <Compile Include="Commands\Volume\UnmuteCommand.cs" />
     <Compile Include="Commands\Volume\MuteCommand.cs" />
     <Compile Include="ParameterizedCommands\SaveToPlaylistCommand.cs" />
     <Compile Include="ParameterizedCommands\DirectVolumeCommand.cs" />
     <Compile Include="ParameterizedCommands\StartPlaylistCommand.cs" />
-    <Compile Include="SpotifyPremiumPlugin.ApiResponse.cs" />
-    <Compile Include="SpotifyPremiumPlugin.Api.cs" />
-    <Compile Include="SpotifyPremiumPlugin.DevicesSelector.cs" />
-    <Compile Include="SpotifyPremiumPlugin.Installer.cs" />
-    <Compile Include="Commands\LoginToSpotifyCommand.cs" />
+    <Compile Include="VSCodePlugin.ApiResponse.cs" />
+    <Compile Include="VSCodePlugin.Api.cs" />
+    <Compile Include="VSCodePlugin.DevicesSelector.cs" />
+    <Compile Include="VSCodePlugin.Installer.cs" />
+    <Compile Include="Commands\LoginToVSCodeCommand.cs" />
     <Compile Include="Commands\Playback\TogglePlaybackCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -87,8 +87,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SpotifyPremiumApplication.cs" />
-    <Compile Include="SpotifyPremiumPlugin.cs" />
+    <Compile Include="VSCodeApplication.cs" />
+    <Compile Include="VSCodePlugin.cs" />
     <Compile Include="Commands\Volume\ToggleMuteCommand.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -153,7 +153,7 @@
     <EmbeddedResource Include="Icons\Width80\PlayPause.png" />
     <EmbeddedResource Include="Icons\Width80\PlayStop.png" />
     <EmbeddedResource Include="Icons\Width80\PreviousTrack.png" />
-    <Content Include="spotify-client-template.txt" />
+    <Content Include="VSCode-client-template.txt" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />

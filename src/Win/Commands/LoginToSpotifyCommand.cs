@@ -1,20 +1,20 @@
 ﻿// Copyright(c) Loupedeck.All rights reserved.
 
-namespace Loupedeck.SpotifyPremiumPlugin
+namespace Loupedeck.VSCodePlugin
 {
     using System;
     using Loupedeck;
 
-    internal class LoginToSpotifyCommand : PluginDynamicCommand
+    internal class LoginToVSCodeCommand : PluginDynamicCommand
     {
-        public LoginToSpotifyCommand()
+        public LoginToVSCodeCommand()
             : base(
-                  "Login to Spotify",
-                  "Premium user login to Spotify API",
+                  "Login to VSCode",
+                  " user login to VSCode API",
                   "Login")
         {
         }
 
-        protected override void RunCommand(String actionParameter) => (this.Plugin as SpotifyPremiumPlugin).LoginToSpotify();
+        protected override void RunCommand(String actionParameter) => (this.Plugin as VSCodePlugin).LoginToVSCode();
     }
 }
